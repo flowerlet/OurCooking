@@ -5,27 +5,26 @@ namespace OurCooking.Scenes.Test
 {
     public class TestSceneManager : MonoBehaviour
     {
-        SocketIOClient.Client socket;
+        protected SocketIO.Client SocketEntity;
 
         private void Start()
         {
-            socket = new SocketIOClient.Client("http://127.0.0.1:80/");
-            socket.On("connect", (fn) => {
-                Debug.Log("connect - socket");
+            SocketEntity = new SocketIO.Client("http://127.0.0.1:80/");
+            SocketEntity.On("connect", (fn) => {
+                Debug.Log("connect - SocketEntity");
 
                 Dictionary<string, string> args = new Dictionary<string, string>();
                 args.Add("msg", "what's up?");
-                socket.Emit("SEND", args);
+                SocketEntity.Emit("SEND", args);
             });
-            socket.On("RECV", (data) => {
+            SocketEntity.On("RECV", (data) => {
                 Debug.Log(data.Json.ToJsonString());
             });
-            socket.Error += (sender, e) => {
-                Debug.Log("socket Error: " + e.Message.ToString());
+            SocketEntity.Error += (sender, e) => {
+                Debug.Log("SocketEntity Error: " + e.Message.ToString());
             };
-            socket.Connect();
+            SocketEntity.Connect();
         }
-
 
         protected void Send()
         {
@@ -33,14 +32,14 @@ namespace OurCooking.Scenes.Test
 
             Dictionary<string, string> args = new Dictionary<string, string>();
             args.Add("msg", "hello!");
-            socket.Emit("SEND", args);
+            SocketEntity.Emit("SEND", args);
         }
 
         protected void Close()
         {
             Debug.Log("Closing");
 
-            socket.Close();
+            SocketEntity.Close();
         }
     }
 }
